@@ -1,0 +1,73 @@
+---
+ image:
+ 	name : ubuntu-xcloud-x86_64
+ 	distribution: ubuntu
+ 	release: bionic
+ 	description: 
+ 	architecture: x86_64
+ 
+ source:
+ 	downloader: debootstrap
+ 	same_as: gutsy
+ 	url: http://archive.ubuntu.com/ubuntu
+ 	keyserver: keyserver.ubuntu.com
+ 	keys:
+ 	- 0x790BC7277767219C42C86F933B4FE6ACC0B21F32
+ 	- 0xf6ecb3762474eda9d21b7022871920d1991bc93c
+ 
+ targets:
+   lxc:
+     create_message: |-
+       You just created an {{ image.description }} container.
+       To enable SSH, run: apt install openssh-server
+       No default root or user password are set by LXC.
+     config:
+     - type: all
+       before: 5
+       content: |-
+         lxc.include = LXC_TEMPLATE_CONFIG/ubuntu.common.conf
+ 
+     - type: user
+       before: 5
+       content: |
+ 
+ files:
+ 	-path: /etc/hostname
+ 	generator: hostname
+ 
+ 	-path: /etc/hosts
+ 	generator: hosts
+ 
+ 	-path: /etc/resolvconf/resolv.conf.d/original
+ 	generator: remove
+ 
+ 	-path: /etc/resolvconf/resolv.conf.d/tail
+ 	generator: remove
+ 
+ 	-path: /etc/drop-id
+ 	generator: dump
+ 
+ 	-path: /etc/user/profile
+ 	generator: copy
+ 	source: /etc/profile
+ 
+ 	-path: /var/lib/dbus/drop-id
+ 	generator: remove
+ 
+ 	-path: /etc/netplan/10-blacksmth.yaml
+ 	generator: dump
+ 
+ 	releases:
+ 	- bionic
+ 	- eoan
+ 	- focal
+ 	- groovy
+ 	- hirsute
+ 	- impish
+ 	- jammy
+ 
+ 	types:
+ 	- drop
+ 
+ 	variants:
+ 	- default 

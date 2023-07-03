@@ -1,0 +1,70 @@
+---
+ project: 'dropper-example-webapp'
+ module: 'webapp-backend'
+ drop:
+  name: ubuntu_dropper_example
+  type: 'dev-drop'
+  version: '1.0.0'
+  tags:
+    - 'stable'
+    - 'ubuntu'
+    - 'dropper'
+    - 'example'
+    - '2022'
+    - 'bionic'
+  publisher: '@ankurdebnath'
+
+ image:
+  image_id: '790BC7277767219C4'
+  name: ubuntu-xcloud-x86_64
+  distribution: ubuntu
+  release: bionic
+  description: Standard XCloud Ubuntu Image
+  architecture: x86_64
+ 
+ targets:
+  lxc:
+    create_message: |-
+      You just created an { image.description } container.
+      To enable SSH, run : apt install openssh-server
+      No default root or user password is set by Dropper
+    config:
+      - type: all
+        before: 5
+        content: |-
+          drop.include = DROP_TEMPLATE_CONFIG/ubuntu.common.conf
+
+      - type: user
+        before: 5
+        content: |-
+          drop.include = DROP_TEMPLATE_CONFIG/ubuntu.common.conf
+
+      - type: monitordaemon
+        before: 5
+        content: |-
+          drop.include = DROP_TEMPLATE_CONFIG/ubuntu.common.conf
+ files:
+  - path: /etc/hostname
+    generator: hostname
+
+  - path: /etc/hosts
+    generator: hosts
+
+  - path: /etc/resolvconf/resolv.conf.d/original
+    generator: remove
+
+  - path: /etc/resolvconf/resolv.conf.d/tail
+    generator: remove
+
+  - path: /etc/drop_id
+    generator: dump
+
+  - path: /etc/user/profile
+    generator: copy
+    source: /etc/profile
+
+  - path: /var/lib/dbus/drop_id
+    generator: remove
+
+  - path: /etc/netplan/10-blacsmth.yaml
+    generator: dump
